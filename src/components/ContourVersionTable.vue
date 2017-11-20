@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>
+    <v-card-title class="blue lighten-1 white--text">
       Contour Version
       <v-spacer></v-spacer>
     </v-card-title>

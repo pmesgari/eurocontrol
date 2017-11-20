@@ -1,10 +1,10 @@
 <template>
   <v-card>
-    <v-card-title id="contours-table-header" class="blue white--text darken-1">
+    <v-card-title id="contours-table-header" class="blue white--text darken-2">
       Contours
       <v-spacer></v-spacer>
       <v-text-field
-        class="blue white--text darken-1"
+        class="blue white--text darken-2"
         append-icon="search"
         label="Search"
         single-line

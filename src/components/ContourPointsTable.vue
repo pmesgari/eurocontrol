@@ -1,6 +1,6 @@
 <template>
   <v-card style="text-align: center;">
-    <v-card-title>
+    <v-card-title class="blue lighten-1 white--text">
       Coordinates
       <v-spacer></v-spacer>
     </v-card-title>
@@ -18,7 +18,7 @@
             lazy
           >
             <div>{{ props.item.lat }}</div>
-            <div slot="input" class="mt-3 title">Update Iron</div>
+            <div slot="input" class="mt-3 title">Update Coordinates</div>
             <v-text-field
               slot="input"
               label="Edit"
@@ -38,7 +38,7 @@
             lazy
           >
             <div>{{ props.item.lng }}</div>
-            <div slot="input" class="mt-3 title">Update Iron</div>
+            <div slot="input" class="mt-3 title">Update Coordinates</div>
             <v-text-field
               slot="input"
               label="Edit"
@@ -71,8 +71,8 @@ export default {
       search: '',
       pagination: {},
       headers: [
-        { text: 'Latitude', value: 'lat' },
-        { text: 'Longitude', value: 'lng' }
+        { text: 'Latitude', value: 'lat', sortable: false },
+        { text: 'Longitude', value: 'lng', sortable: false }
       ],
       items: []
     }
@@ -96,8 +96,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-/* table.table thead {
-  padding: 0 20px;
-} */
+
 </style>
 

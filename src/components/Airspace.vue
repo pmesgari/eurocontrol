@@ -76,10 +76,7 @@
             username: 'EURO',
             password: 'EURO'
           },
-          data: {
-            contourId: this.contourId,
-            contourPoints: ''
-          }
+          data: args
         })
           .then(function (response) {
             console.log(response)
