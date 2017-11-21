@@ -16,16 +16,30 @@
         v-bind:headers="headers"
         v-bind:items="items"
         v-bind:search="search"
+        v-model="selected"
+        item-key="contourId"
+        select-all
+        class="elevation-1"
       >
       <template slot="items" slot-scope="props">
-        <td @click="emitGetCoordinate" class="text-xs-right">{{ props.item.contourId }}</td>
-        <td class="text-xs-right">{{ props.item.longDesc }}</td>
+        <td>
+          <v-checkbox
+            primary
+            hide-details
+            v-model="props.selected"
+          ></v-checkbox>
+        </td>
+        <td class="text-xs-right">{{ props.item.contourId }}</td>
         <td class="text-xs-right">{{ props.item.cwpId }}</td>
       </template>
       <template slot="pageText" slot-scope="{ pageStart, pageStop }">
         {{ pageStart }} to {{ pageStop }}
       </template>
     </v-data-table>
+    <v-card-actions class="contour-table-btn">
+      <v-btn class="primary" @click="emitGetCoordinate">Get Coordinates</v-btn>
+      <v-btn class="warning" @click="emitClearCoordinates">Clear</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -41,12 +55,10 @@
         pagination: {},
         headers: [
           { text: 'Contour ID', value: 'contourId' },
-          { text: 'Long Desc', value: 'longDesc' },
           { text: 'CWP ID', value: 'cwpId' }
         ],
-        items: [
-
-        ]
+        items: [],
+        selected: []
       }
     },
     methods: {
@@ -68,7 +80,11 @@
           })
       },
       emitGetCoordinate: function (event) {
-        this.$emit('getcoordinate', event)
+        this.$emit('getcoordinate', this.selected)
+      },
+      emitClearCoordinates: function (event) {
+        this.selected = []
+        this.$emit('clearcoordinates', event)
       }
     },
     mounted () {
@@ -79,7 +95,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-  /* #contours-table-header {
-    color:
-  } */
+  .contour-table-btn {
+    justify-content: center;
+  }
 </style>

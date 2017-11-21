@@ -50,6 +50,7 @@
             ></v-text-field>
           </v-edit-dialog>
         </td>
+        <td class="text-xs-right">{{ props.item.areaContourId }}</td>
       </template>
       <template slot="pageText" slot-scope="{ pageStart, pageStop }">
         {{ pageStart }} to {{ pageStop }}
@@ -72,7 +73,8 @@ export default {
       pagination: {},
       headers: [
         { text: 'Latitude', value: 'lat', sortable: false },
-        { text: 'Longitude', value: 'lng', sortable: false }
+        { text: 'Longitude', value: 'lng', sortable: false },
+        { text: 'ID', value: 'areaContourId', sortable: false }
       ],
       items: []
     }

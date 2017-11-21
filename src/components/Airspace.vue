@@ -2,8 +2,9 @@
   <v-container fluid fill-height>
     <v-layout>
       <v-flex d-flex xs3 id="contour-tables">
-          <contour-table v-on:getcoordinate="getCoordinates"></contour-table>
-          <contour-version-table v-on:getcoordinate="getCoordinates"></contour-version-table>
+          <!-- <contour-select v-on:getcoordinate="getCoordinates" v-on:clearCoordinates="clearCoordinates"></contour-select> -->
+          <contour-table v-on:getcoordinate="getCoordinates" v-on:clearcoordinates="clearCoordinates"></contour-table>
+          <contour-version-table v-on:getcoordinate="getCoordinates" :airspaceVersions="airspaceVersions"></contour-version-table>
       </v-flex>
       <v-flex d-flex xs6 style="height:650px">
           <div id="map"></div>
@@ -27,14 +28,19 @@
   
   export default {
     name: 'airspace',
-    components: {'contour-table': ContourTable, 'contour-points-table': ContourPointsTable, 'contour-version-table': ContourVersionTable},
+    components: {
+      'contour-table': ContourTable, 
+      'contour-points-table': ContourPointsTable, 
+      'contour-version-table': ContourVersionTable},
     data () {
       return {
         contourId: '',
 
         coordinates: [],
-        flightPlanCoordinates: [],
+        airspaceVersions: [],
 
+        flightPlanCoordinates: [],
+        selectedContourIds: [],
         googleMaps: null
       }
     },
@@ -66,7 +72,7 @@
         flightPath.setMap(map)
       },
       validateAirspace: function (args) {
-        console.log('validating airspace for: ' + this.contourId)
+        console.log('validating airspace for: ' + this.selectedContourIds)
         console.log('Coordinates are: ')
         console.log(args)
         axios({
@@ -80,31 +86,69 @@
         })
           .then(function (response) {
             console.log(response)
-            
+            this.updateVersions()
           }.bind(this))
           .catch(function (error) {
             console.log(error)
           })
       },
-      getCoordinates: function (event) {
-        this.contourId = event.srcElement.textContent
-        console.log('getting coordinates for: ' + event.srcElement.textContent)
-        axios({
-          method: 'get',
-          url: 'http://localhost:8090/airspace/points;contourId='+event.srcElement.textContent,
-          auth: {
-            username: 'EURO',
-            password: 'EURO'
-          }
-        })
-          .then(function (response) {
-            console.log(response)
-            this.coordinates = response.data
-            
-          }.bind(this))
-          .catch(function (error) {
-            console.log(error)
+      updateVersions: function () {
+        let promiseArr = this.selectedContourIds.map(sCid => {
+          let axiosObj = axios({
+            method: 'get',
+            url: 'http://localhost:8090/airspace/version;contourId=' + sCid.contourId,
+            auth: {
+              username: 'EURO',
+              password: 'EURO'
+            }
           })
+          return axiosObj
+        })
+        axios.all(promiseArr)
+          .then(function (response) {
+            let tempObj = []
+            response.forEach(r => {
+              tempObj.push(r.data)
+            })
+            tempObj.forEach(tObj => {
+              tObj.forEach(record => {
+                this.airspaceVersions.push(record)
+              })
+            })
+          }.bind(this))
+      },
+      getCoordinates: function (args) {
+        this.selectedContourIds = args
+        this.coordinates = []
+        let promiseArr = args.map(a => {
+          let axiosObj = axios({
+            method: 'get',
+            url: 'http://localhost:8090/airspace/points;contourId=' + a.contourId,
+            auth: {
+              username: 'EURO',
+              password: 'EURO'
+            }
+          })
+          return axiosObj
+        })
+        axios.all(promiseArr)
+          .then(function (response) {
+            this.updateVersions()
+            let tempObj = []
+            response.forEach(r => {
+              tempObj.push(r.data)
+            })
+            tempObj.forEach(tObj => {
+              tObj.forEach(record => {
+                this.coordinates.push(record)
+              })
+            })
+          }.bind(this))
+      },
+      clearCoordinates: function () {
+        this.airspaceVersions = []
+        this.selectedContourIds = []
+        this.coordinates = []
       }
     },
     mounted () {

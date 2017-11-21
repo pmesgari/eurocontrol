@@ -6,13 +6,13 @@
     </v-card-title>
     <v-data-table
         v-bind:headers="headers"
-        v-bind:items="items"
+        v-bind:items="this.airspaceItems"
         v-bind:search="search"
       >
       <template slot="items" slot-scope="props">
+        <td class="text-xs-right">{{ props.item.airspaceTimestamp }}</td>
         <td @click="emitGetCoordinate" class="text-xs-right">{{ props.item.contourId }}</td>
-        <td class="text-xs-right">{{ props.item.longDesc }}</td>
-        <td class="text-xs-right">{{ props.item.cwpId }}</td>
+        <td class="text-xs-right">{{ props.item.airspaceVersion }}</td>
       </template>
       <template slot="pageText" slot-scope="{ pageStart, pageStop }">
         {{ pageStart }} to {{ pageStop }}
@@ -26,6 +26,7 @@
   import axios from 'axios'
   export default {
     name: 'contour-version-table',
+    props: ['airspaceVersions'],
     data () {
       return {
         max25chars: (v) => v.length <= 25 || 'Input too long!',
@@ -33,51 +34,30 @@
         search: '',
         pagination: {},
         headers: [
-          { text: 'Contour ID', value: 'contourId' },
-          { text: 'Long Desc', value: 'longDesc' },
-          { text: 'CWP ID', value: 'cwpId' }
+          { text: 'Timestamp', value: 'airspaceTimestamp' },
+          { text: 'ID', value: 'contourId' },
+          { text: 'Version', value: 'airspaceVersion', sortable: false}
         ],
         items: [
-
         ]
       }
     },
     methods: {
-      getContours: function () {
-        axios({
-          method: 'get',
-          url: 'http://localhost:8090/airspace/contours',
-          auth: {
-            username: 'EURO',
-            password: 'EURO'
-          }
-        })
-          .then(function (response) {
-            console.log(response)
-            this.items = response.data
-          }.bind(this))
-          .catch(function (error) {
-            console.log(error)
-          })
-      },
       emitGetCoordinate: function (event) {
-        this.$emit('getcoordinate', event)
+        this.$emit('getcoordinate', this.selected)
       }
     },
     mounted () {
-      // this.getContours()
+    },
+    computed: {
+      airspaceItems: function () {
+        return this.airspaceVersions
+      }
     }
   }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-  /* td {
-    cursor: pointer;
-  }
-  table.table tbody td, table.table tbody th {
-    height: 38px !important;
-    font-size: 12px;
-    padding: 0 20px;
-  } */
+
 </style>
