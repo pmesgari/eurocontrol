@@ -50,7 +50,7 @@
             ></v-text-field>
           </v-edit-dialog>
         </td>
-        <td class="text-xs-right">{{ props.item.areaContourId }}</td>
+        <td class="text-xs-right">{{ props.item.areaContourId || props.item.airspaceVersion.slice(0,5) }}</td>
       </template>
       <template slot="pageText" slot-scope="{ pageStart, pageStop }">
         {{ pageStart }} to {{ pageStop }}

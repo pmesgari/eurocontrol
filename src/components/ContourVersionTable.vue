@@ -8,16 +8,31 @@
         v-bind:headers="headers"
         v-bind:items="this.airspaceItems"
         v-bind:search="search"
+        v-model="selected"
+        item-key="airspaceVersion"
+        select-all
+        class="elevation-1"
       >
       <template slot="items" slot-scope="props">
+        <td>
+          <v-checkbox
+            primary
+            hide-details
+            v-model="props.selected"
+          ></v-checkbox>
+        </td>
         <td class="text-xs-right">{{ props.item.airspaceTimestamp }}</td>
-        <td @click="emitGetCoordinate" class="text-xs-right">{{ props.item.contourId }}</td>
-        <td class="text-xs-right">{{ props.item.airspaceVersion }}</td>
+        <td class="text-xs-right">{{ props.item.contourId }}</td>
+        <td class="text-xs-right">{{ props.item.airspaceVersion.slice(0,5) }}</td>
       </template>
       <template slot="pageText" slot-scope="{ pageStart, pageStop }">
         {{ pageStart }} to {{ pageStop }}
       </template>
     </v-data-table>
+    <v-card-actions class="contour-table-btn table-btn">
+      <v-btn class="primary" @click="emitGetVersionedCoordinate">Get Coordinates</v-btn>
+      <!-- <v-btn class="warning" @click="emitClearVersions">Clear</v-btn> -->
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -33,6 +48,7 @@
         tmp: '',
         search: '',
         pagination: {},
+        selected: [],
         headers: [
           { text: 'Timestamp', value: 'airspaceTimestamp' },
           { text: 'ID', value: 'contourId' },
@@ -43,8 +59,8 @@
       }
     },
     methods: {
-      emitGetCoordinate: function (event) {
-        this.$emit('getcoordinate', this.selected)
+      emitGetVersionedCoordinate: function (event) {
+        this.$emit('getversionedcoordinate', this.selected)
       }
     },
     mounted () {

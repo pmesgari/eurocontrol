@@ -36,9 +36,10 @@
         {{ pageStart }} to {{ pageStop }}
       </template>
     </v-data-table>
-    <v-card-actions class="contour-table-btn">
+    <v-card-actions class="contour-table-btn table-btn">
       <v-btn class="primary" @click="emitGetCoordinate">Get Coordinates</v-btn>
-      <v-btn class="warning" @click="emitClearCoordinates">Clear</v-btn>
+      <v-btn class="primary" @click="emitGetVersions">Get Versions</v-btn>
+      <v-btn class="warning" @click="emitClearVersions">Clear</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -79,12 +80,15 @@
             console.log(error)
           })
       },
+      emitGetVersions: function (event) {
+        this.$emit('getversions', this.selected)
+      },
+      emitClearVersions: function (event) {
+        this.selected = []
+        this.$emit('clearversions', event)
+      },
       emitGetCoordinate: function (event) {
         this.$emit('getcoordinate', this.selected)
-      },
-      emitClearCoordinates: function (event) {
-        this.selected = []
-        this.$emit('clearcoordinates', event)
       }
     },
     mounted () {
@@ -95,7 +99,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-  .contour-table-btn {
+  .table-btn {
     justify-content: center;
   }
 </style>
