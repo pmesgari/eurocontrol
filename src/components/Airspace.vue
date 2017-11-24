@@ -65,7 +65,13 @@
             extraKey = 'noVersion'
           }
           groupedArgs[sCid.contourId + '_' + extraKey] = args.filter(a => {
-            return a.airspaceVersion == sCid.airspaceVersion
+            // debugger
+            if(a.airspaceVersion) {
+              return a.airspaceVersion == sCid.airspaceVersion
+            }
+            else {
+              return a.areaContourId == sCid.contourId
+            }
           })
         })
         let filteredArgs = []
